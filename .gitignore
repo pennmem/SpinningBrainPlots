@@ -1,0 +1,10 @@
+*.mp4
+*.npz
+*.npy
+
+*.swp
+*.swo
+tags
+TAGS
+.DS_STORE
+

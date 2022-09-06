@@ -1,0 +1,50 @@
+name: brainPlot2
+channels:
+  - defaults
+dependencies:
+  - ca-certificates=2018.03.07=0
+  - certifi=2018.8.24=py35_1
+  - libcxx=4.0.1=hcfea43d_1
+  - libcxxabi=4.0.1=hcfea43d_1
+  - libedit=3.1.20170329=hb402a30_2
+  - libffi=3.2.1=h475c297_4
+  - ncurses=6.1=h0a44026_1
+  - openssl=1.0.2p=h1de35cc_0
+  - pip=10.0.1=py35_0
+  - python=3.5.6=hc167b69_0
+  - readline=7.0=h1de35cc_5
+  - setuptools=40.2.0=py35_0
+  - sqlite=3.25.3=ha441bb4_0
+  - tk=8.6.8=ha441bb4_0
+  - wheel=0.31.1=py35_0
+  - xz=5.2.4=h1de35cc_4
+  - zlib=1.2.11=h1de35cc_3
+  - conda:
+    - appnope==0.1.0
+    - apptools==4.4.0
+    - configobj==5.0.6
+    - decorator==4.3.0
+    - envisage==4.7.0
+    - mayavi==4.6.2
+    - numpy==1.15.4
+    - pexpect==4.6.0
+    - pickleshare==0.7.5
+    - ptyprocess==0.6.0
+    - pyface==6.0.0
+    - simplegeneric==0.8.1
+    - six==1.11.0
+    - traitlets==4.3.2
+    - traits==4.6.0
+    - traitsui==6.0.0
+    - vtk==8.2.0
+    - tbb==2020.2
+    - jsoncpp==1.8.4
+  - pip:
+    - backports.shutil-get-terminal-size==1.0.0
+    - ipython==4.2.0
+    - ipython-genutils==0.2.0
+    - mne==0.17.0
+    - pygments==2.3.0
+    - pyqt5==5.11.3
+    - pyqt5-sip==4.19.13
+
