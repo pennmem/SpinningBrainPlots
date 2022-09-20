@@ -126,6 +126,7 @@ def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, regio
 
 from mayavi import mlab
 
+# When using this, make sure "mlab.options.offscreen = False" before creating the first figure
 def showBrainPlot(figure, rotation=0, elevation=0, distance=0):
   # Validate mlab setup
   if mlab.options.offscreen == False:
@@ -143,6 +144,7 @@ from mayavi import mlab
 from PIL import Image
 import ffmpeg
 
+# When using this, make sure "mlab.options.offscreen = True" before creating the first figure
 def genRotatingVideo(figure, duration_s, degrees, fps, width, height, filename="spinningBrainPlot"):
   # Validate mlab setup
   if mlab.options.offscreen == False:
@@ -199,6 +201,8 @@ HEIGHT = 1080
 DURATION_S = 8
 DEGREES = 360
 FPS = 25
+FILE_NAME = "brain_plot_data.npz"
+#FILE_NAME = "crazy_brain_plot_data.npz"
 
 # Setup the scene
 mlab.options.offscreen = True  # Stops the view window popping up and makes sure you get the correct size screenshots.
@@ -208,12 +212,12 @@ figure = mlab.figure(1, size=(WIDTH, HEIGHT), bgcolor=(1,1,1), fgcolor=(0,0,0))
 loadVtkMesh(vtkFile_l, figure)
 loadVtkMesh(vtkFile_r, figure)
 
-plotBrainElectrodes(figure, "brain_plot_data.npz", log10=False, region_plot=False, opacity_threshold=3)
-#plotBrainElectrodes(figure, "crazy_brain_plot_data.npz")
+plotBrainElectrodes(figure, FILE_NAME)
+#plotBrainElectrodes(figure, FILE_NAME, log10=False, region_plot=False, opacity_threshold=3)
 
-#showBrainPlot()
+#showBrainPlot()  # When using this, make sure mlab.options.offscreen = False
 
-genRotatingVideo(figure, DURATION_S, DEGREES, FPS, WIDTH, HEIGHT)
+genRotatingVideo(figure, DURATION_S, DEGREES, FPS, WIDTH, HEIGHT)  # When using this, make sure mlab.options.offscreen = True
 
 
 
