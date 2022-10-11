@@ -25,13 +25,14 @@ from mayavi import mlab
 
 # opacity_threshold is a t_value
 # opacity only applies to things that are less than the opacity threshold
-def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, region_plot=None, opacity_threshold=0, opacity=0.2, clip=(None, None)):
+def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, region_plot=None, opacity_threshold=0, opacity=0.2, clip=(None, None), label_subjects=False):
   # Setup
   figure.scene.disable_render = True
   
   # Load data
   # Nx5 array of that give electrode XYZ coordinates, t_values, regions, stim XYZ coordinates, and a list of settings
   data = np.load(filename, allow_pickle=True)
+  subjects = data['subjects'] # strings
   coords = data['coords']  # [3] XYZ coords
   t_values = data['t_values']  # floats 
   regions = data['regions']  # strings
@@ -44,8 +45,6 @@ def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, regio
   #print(regions)
   #print(stim_coords)
   
-  #settings['electrode_size'] = 2
-
   # Configure plot settings
   colormap = settings.get('stim_colormap', None)
   vmin = clip[0] if clip[0] is not None else settings.get('vmin', None)
@@ -69,6 +68,11 @@ def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, regio
   if log10 or (log10 is None and settings.get('log10_data', False)):
     # Take the log of all of the t_values for display
     colors = twoSidedLog(colors)
+
+  # Label every electrode with subject
+  if label_subjects:
+    for sub, coord in zip(subjects, coords):
+      mlab.text3d(coord[0], coord[1], coord[2], sub)
 
   # Make list of electrodes that don't pass opacity_threshold
   # Remove those electrodes from the original list
@@ -218,9 +222,8 @@ loadVtkMesh(vtkFile_l, figure)
 loadVtkMesh(vtkFile_r, figure)
 
 # Plot electrodes
-#plotBrainElectrodes(figure, FILE_NAME, clip=(-3, 3))
-plotBrainElectrodes(figure, FILE_NAME, clip=(-3, 3), opacity_threshold=2, opacity=0)
-#plotBrainElectrodes(figure, FILE_NAME, log10=False, region_plot=False, opacity_threshold=3)
+plotBrainElectrodes(figure, FILE_NAME)
+#plotBrainElectrodes(figure, FILE_NAME, clip=(-3, 3), opacity_threshold=2, opacity=0, label_subjects=True)
 
 # Generate image/video
 if GEN_VIDEO:

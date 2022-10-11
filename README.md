@@ -23,10 +23,12 @@ If an existing installation of vtk is already installed by your system, you can
 
 # Generate the data
 [This is done on rhino]
+
 Run the *GenerateBrainData.ipynb* file in jupyterLab (or other) to generate the brain_plot_data.npz 
 
 # Build the diagram
 [This is done on the local computer]
+
 ```bash
 conda activate brainPlot
 python3 genBrainPlot.py
