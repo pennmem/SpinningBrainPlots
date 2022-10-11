@@ -25,7 +25,7 @@ from mayavi import mlab
 
 # opacity_threshold is a t_value
 # opacity only applies to things that are less than the opacity threshold
-def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, region_plot=None, opacity_threshold=0, opacity=0.2):
+def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, region_plot=None, opacity_threshold=0, opacity=0.2, clip=(None, None)):
   # Setup
   figure.scene.disable_render = True
   
@@ -44,10 +44,12 @@ def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, regio
   #print(regions)
   #print(stim_coords)
   
+  #settings['electrode_size'] = 2
+
   # Configure plot settings
   colormap = settings.get('stim_colormap', None)
-  vmin = settings.get('vmin', None)
-  vmax = settings.get('vmax', None)
+  vmin = clip[0] if clip[0] is not None else settings.get('vmin', None)
+  vmax = clip[1] if clip[1] is not None else settings.get('vmax', None)
   colors = t_values
 
   if (vmin is None) and (vmax is None):
@@ -117,7 +119,7 @@ def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, regio
                           scale_mode=scale_mode, colormap='cool', resolution=40) #inferno # summer # magma #afmhot #jet #viridis
 
   # Plot the colorbar
-  mlab.colorbar(object=normal_pts, title="t-scores")
+  mlab.colorbar(object=normal_pts, title="t-scores", nb_labels=7, label_fmt="%.1f")
 
   # Teardown
   figure.scene.disable_render = False
@@ -129,9 +131,9 @@ from mayavi import mlab
 # When using this, make sure "mlab.options.offscreen = False" before creating the first figure
 def showBrainPlot(figure, rotation=0, elevation=0, distance=0):
   # Validate mlab setup
-  if mlab.options.offscreen == False:
-    print("You need to put the line \"mlab.options.offscreen = True\" at the top of your code"
-          "Also, showBrainPlot() will not do anything while offsreen is set tot True")
+  if mlab.options.offscreen == True:
+    print("Remove the line \"mlab.options.offscreen = True\" at the top of your code"
+          "Also, genRotatingVideo() will not do anything while offscreen is set to False or is not specified")
     return
 
   # Show Plot
@@ -149,7 +151,7 @@ def genRotatingVideo(figure, duration_s, degrees, fps, width, height, filename="
   # Validate mlab setup
   if mlab.options.offscreen == False:
     print("You need to put the line \"mlab.options.offscreen = True\" at the top of your code"
-          "Also, showBrainPlot() will not do anything while offsreen is set tot True")
+          "Also, showBrainPlot() will not do anything while offscreen is set to True")
     return
 
   # Initialise ffmpeg process
@@ -204,20 +206,27 @@ FPS = 25
 FILE_NAME = "brain_plot_data.npz"
 #FILE_NAME = "crazy_brain_plot_data.npz"
 
+GEN_VIDEO = True
+
 # Setup the scene
-mlab.options.offscreen = True  # Stops the view window popping up and makes sure you get the correct size screenshots.
+if GEN_VIDEO:
+  mlab.options.offscreen = True  # Stops the view window popping up and makes sure you get the correct size screenshots.
 figure = mlab.figure(1, size=(WIDTH, HEIGHT), bgcolor=(1,1,1), fgcolor=(0,0,0))
 
 # Setup brain surfaces
 loadVtkMesh(vtkFile_l, figure)
 loadVtkMesh(vtkFile_r, figure)
 
-plotBrainElectrodes(figure, FILE_NAME)
+# Plot electrodes
+#plotBrainElectrodes(figure, FILE_NAME, clip=(-3, 3))
+plotBrainElectrodes(figure, FILE_NAME, clip=(-3, 3), opacity_threshold=2, opacity=0)
 #plotBrainElectrodes(figure, FILE_NAME, log10=False, region_plot=False, opacity_threshold=3)
 
-#showBrainPlot()  # When using this, make sure mlab.options.offscreen = False
-
-genRotatingVideo(figure, DURATION_S, DEGREES, FPS, WIDTH, HEIGHT)  # When using this, make sure mlab.options.offscreen = True
-
-
+# Generate image/video
+if GEN_VIDEO:
+  # When using this, make sure mlab.options.offscreen = True
+  genRotatingVideo(figure, DURATION_S, DEGREES, FPS, WIDTH, HEIGHT)
+else:
+  # When using this, make sure mlab.options.offscreen = False (it's False by default)
+  showBrainPlot(figure)
 
