@@ -74,6 +74,26 @@ def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, regio
     for sub, coord in zip(subjects, coords):
       mlab.text3d(coord[0], coord[1], coord[2], sub)
 
+  # Set the scale, colors, and sizes
+  if single_subject or (single_subject == None and settings.get('single_subject', False)):
+    # Single subject data plotting
+    scale_mode = 'none'
+    colormap = settings.get('colormap', 'YlOrBr') # Override the default color scheme
+    electrode_size = settings.get('electrode_size', 4) # The size of the electrodes
+  else:
+    scale_mode = 'vector'
+    colormap = settings.get('colormap', 'PuOr') # Override the default color scheme
+    electrode_size = settings.get('electrode_size', 2.5) # The size of the electrodes
+  
+  # Set up region plot
+  if region_plot or (region_plot is None and settings.get('do_region_plot', False)):
+    # True means region, else means tscore
+    colormap = settings.get('colormap', 'gist_rainbow') # Override the default color scheme
+    unique_regions = list(set(regions))
+    step_size = 2.0 / (len(unique_regions) - 1) if len(unique_regions) > 1 else 0
+    mapping = {region: -1 + i * step_size for i, region in enumerate(unique_regions)}
+    colors = [mapping[region] for region in regions]
+  
   # Make list of electrodes that don't pass opacity_threshold
   # Remove those electrodes from the original list
   opacity_filter_array = np.absolute(t_values) < opacity_threshold
@@ -85,22 +105,6 @@ def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, regio
   t_values = t_values[~opacity_filter_array]
   regions = regions[~opacity_filter_array]
   colors = colors[~opacity_filter_array]
-
-  if single_subject or (single_subject == None and settings.get('single_subject', False)):
-    # Single subject data plotting
-    scale_mode = 'none'
-    colormap = settings.get('colormap', 'YlOrBr') # Override the default color scheme
-    electrode_size = settings.get('electrode_size', 4) # The size of the electrodes
-  else:
-    scale_mode = 'vector'
-    colormap = settings.get('colormap', 'PuOr') # Override the default color scheme
-    electrode_size = settings.get('electrode_size', 2.5) # The size of the electrodes
-  
-  # TODO: JPB: Fix region plot
-  if region_plot or (region_plot is None and settings.get('do_region_plot', False)):
-    # True means region, else means tscore
-    colormap = settings.get('colormap', 'black-white') # Override the default color scheme
-    #colors = np.unique(regions, return_inverse=True)[1]
     
   # Plot the electrodes
   normal_pts = mlab.points3d(coords[:, 0], coords[:, 1], coords[:, 2], colors,
