@@ -92,7 +92,7 @@ def plotBrainElectrodes(figure, filename, log10=None, single_subject=None, regio
     unique_regions = list(set(regions))
     step_size = 2.0 / (len(unique_regions) - 1) if len(unique_regions) > 1 else 0
     mapping = {region: -1 + i * step_size for i, region in enumerate(unique_regions)}
-    colors = [mapping[region] for region in regions]
+    colors = np.array([mapping[region] for region in regions])
   
   # Make list of electrodes that don't pass opacity_threshold
   # Remove those electrodes from the original list
